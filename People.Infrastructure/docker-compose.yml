@@ -1,0 +1,49 @@
+version: "3.9" # Or the latest version
+
+services:
+  sqldb:
+    image: mcr.microsoft.com/mssql/server:latest # Use the latest SQL Server image
+    container_name: sqlserver_container # Give the container a name
+    ports:
+      - "1433:1433" # Map port 1433 on the host to 1433 in the container (change if needed)
+    environment:
+      - ACCEPT_EULA=Y # Accept the End User License Agreement (required)
+      - SA_PASSWORD=WeeCompanyAssessment2025 # Set a strong password for the 'sa' user (required)
+      - DB_NAME=PeopleDatabase
+    volumes:
+      - sql_data:/var/opt/mssql/data # Persist database data (important!)
+    healthcheck: # Check the health of SQL Server
+      test:
+        [
+          "CMD",
+          "/opt/mssql-tools/bin/sqlcmd",
+          "-S",
+          "localhost",
+          "-U",
+          "sa",
+          "-P",
+          "${SA_PASSWORD}",
+          "-Q",
+          "SELECT 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  peopleapi: # Your API service
+    build:
+      context: . # Path to your API project
+      dockerfile: People.Api/Dockerfile # Path to your API Dockerfile
+    ports:
+      - "8080:8080" # Map port 8080 on the host to 8080 in the container
+    depends_on:
+      sqldb: # Make API depends on the database
+        condition: service_healthy
+    environment:
+      - ConnectionStrings__PeopleDbContext=Server=sqldb;Database=${DB_NAME};User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=true # Use container name for SQL Server address
+    volumes:
+      - ./People.Api:/app # Mount the api directory
+
+volumes:
+  sql_data: # Define the named volume for SQL Server data
