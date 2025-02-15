@@ -1,0 +1,24 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using People.Domain.Entities;
+using People.Domain.Interfaces;
+
+namespace People.Application.UseCases
+{
+    public class GetAllPeopleUseCase : IGetAllPeopleUseCase
+    {
+        private readonly IPersonRepository _repository;
+
+        public GetAllPeopleUseCase(IPersonRepository repository)
+        {
+            _repository = repository;
+        }
+
+        public async Task<IEnumerable<Person>> GetAllAsync()
+        {
+            return await _repository.GetAllAsync();
+        }
+    }
+}
