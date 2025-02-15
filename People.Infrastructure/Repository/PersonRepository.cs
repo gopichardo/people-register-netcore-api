@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using People.Domain.Entities;
+using People.Domain.Interfaces;
 using People.Infrastructure.Persistence;
 
 namespace People.Infrastructure.Repository
@@ -23,9 +24,16 @@ namespace People.Infrastructure.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Person>> GetAllAsync()
+        async Task<IEnumerable<Person>> IPersonRepository.GetAllAsync()
         {
-            return await _context.People.ToListAsync();
+            return await _context.People.Include(x => x.Company).ToListAsync();
+        }
+
+        public async Task<Person> GetSingleByIdAsync(Guid Id)
+        {
+            return await _context
+                .People.Include(x => x.Company)
+                .FirstAsync<Person>(x => x.Id == Id);
         }
     }
 }

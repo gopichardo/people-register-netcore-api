@@ -18,8 +18,11 @@ namespace People.Infrastructure.Persistence
             _configuration = configuration;
         }
 
-        public PeopleDbContext(DbContextOptions<PeopleDbContext> options)
-            : base(options) { }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Person>().Property(x => x.Id).HasDefaultValueSql("NEWID()");
+            modelBuilder.Entity<Company>().Property(x => x.Id).HasDefaultValueSql("NEWID()");
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

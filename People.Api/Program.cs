@@ -1,9 +1,21 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using People.Application.UseCases;
 using People.Application.Validators;
+using People.Domain.Interfaces;
 using People.Infrastructure.Persistence;
+using People.Infrastructure.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add controllers
+builder.Services.AddControllers();
+
+// Inject Services
+builder.Services.AddScoped<IRegisterPersonUseCase, RegisterPersonUseCase>();
+builder.Services.AddScoped<IGetPersonByIdUseCase, GetPersonByIdUseCase>();
+builder.Services.AddScoped<IGetAllPeopleUseCase, GetAllPeopleUseCase>();
+builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -30,41 +42,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing",
-    "Bracing",
-    "Chilly",
-    "Cool",
-    "Mild",
-    "Warm",
-    "Balmy",
-    "Hot",
-    "Sweltering",
-    "Scorching"
-};
-
-app.MapGet(
-        "/weatherforecast",
-        () =>
-        {
-            var forecast = Enumerable
-                .Range(1, 5)
-                .Select(index => new WeatherForecast(
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-                .ToArray();
-            return forecast;
-        }
-    )
-    .WithName("GetWeatherForecast")
-    .WithOpenApi();
+app.MapControllers();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

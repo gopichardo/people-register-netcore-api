@@ -4,7 +4,8 @@ namespace People.Domain.Interfaces
 {
     public interface IPersonRepository
     {
-        Task<List<Person>> GetAllAsync();
+        Task<IEnumerable<Person>> GetAllAsync();
         Task AddAsync(Person person);
+        Task<Person> GetSingleByIdAsync(Guid Id);
     }
 }
