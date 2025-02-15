@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using People.Api.Utils;
 using People.Application.UseCases;
 using People.Application.Validators;
 using People.Domain.Interfaces;
@@ -16,6 +17,7 @@ builder.Services.AddScoped<IRegisterPersonUseCase, RegisterPersonUseCase>();
 builder.Services.AddScoped<IGetPersonByIdUseCase, GetPersonByIdUseCase>();
 builder.Services.AddScoped<IGetAllPeopleUseCase, GetAllPeopleUseCase>();
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
+builder.Services.AddScoped<ValidationResultFormatter, ValidationResultFormatter>();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

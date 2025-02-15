@@ -8,16 +8,16 @@ namespace People.Application.Validators
     {
         public PersonValidator()
         {
-            RuleFor(x => x.Name).NotEmpty().WithMessage("First Name is required.");
-            RuleFor(x => x.Company.Name).NotEmpty().WithMessage("Company Name is required.");
+            RuleFor(x => x.Name).NotEmpty().WithMessage("Nombre del Contacto es requerido.");
+            RuleFor(x => x.Company.Name).NotEmpty().WithMessage("Nombre de la compañìa es requerido.");
             RuleFor(x => x.Phone)
                 .NotEmpty()
                 .Must(BeValidMexicanPhoneNumber)
-                .WithMessage("Last Name is required.");
+                .WithMessage("Un teléfono válido es requerido.");
             RuleFor(x => x.Email)
                 .NotEmpty()
                 .EmailAddress()
-                .WithMessage("A valid Email is required.");
+                .WithMessage("Un correo válido es requerido.");
         }
 
         private bool BeValidMexicanPhoneNumber(string phoneNumber)
